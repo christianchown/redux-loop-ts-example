@@ -17,29 +17,23 @@ const flakify = <T>(f: () => T): Promise<T> =>
       }, 200 + Math.random() * 2000) // tslint:disable-line
   );
 
-type Counter = {
-  value: number;
-};
-
 export type Api = {
-  save(x: Counter): Promise<null>;
-  load(): Promise<Counter>;
+  save(x: number): Promise<null>;
+  load(): Promise<number>;
 };
 
 export const api: Api = {
-  save: (counter: Counter): Promise<null> =>
+  save: (counter: number): Promise<null> =>
     flakify(() => {
-      localStorage.setItem('__counterValue', counter.value.toString());
+      localStorage.setItem('__counterValue', counter.toString());
       return null;
     }),
-  load: (): Promise<Counter> =>
+  load: (): Promise<number> =>
     flakify(() => {
       const storedValue = parseInt(
         localStorage.getItem('__counterValue') || '',
         10
       );
-      return {
-        value: storedValue || 0,
-      };
+      return storedValue || 0;
     }),
 };
